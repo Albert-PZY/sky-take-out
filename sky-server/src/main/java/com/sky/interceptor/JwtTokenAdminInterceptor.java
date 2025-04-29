@@ -29,8 +29,6 @@ public class JwtTokenAdminInterceptor implements HandlerInterceptor {
      * @param response
      * @param handler
      * @return
-     *
-     *
      * @throws Exception
      */
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
