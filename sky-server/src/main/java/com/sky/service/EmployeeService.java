@@ -27,6 +27,7 @@ public interface EmployeeService {
 
     /**
      * 分页查询员工信息
+     *
      * @param employeePageQueryDTO
      * @return PageResult
      */
@@ -34,6 +35,7 @@ public interface EmployeeService {
 
     /**
      * 启用禁用员工账号
+     *
      * @param status
      * @param id
      */
@@ -41,6 +43,7 @@ public interface EmployeeService {
 
     /**
      * 根据id查询员工信息
+     *
      * @param id
      * @return Employee
      */
@@ -48,6 +51,7 @@ public interface EmployeeService {
 
     /**
      * 修改员工信息
+     *
      * @param employeeDTO
      */
     void update(EmployeeDTO employeeDTO);
