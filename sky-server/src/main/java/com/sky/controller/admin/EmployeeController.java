@@ -50,17 +50,9 @@ public class EmployeeController {
         //登录成功后，生成jwt令牌
         Map<String, Object> claims = new HashMap<>();
         claims.put(JwtClaimsConstant.EMP_ID, employee.getId());
-        String token = JwtUtil.createJWT(
-                jwtProperties.getAdminSecretKey(),
-                jwtProperties.getAdminTtl(),
-                claims);
+        String token = JwtUtil.createJWT(jwtProperties.getAdminSecretKey(), jwtProperties.getAdminTtl(), claims);
 
-        EmployeeLoginVO employeeLoginVO = EmployeeLoginVO.builder()
-                .id(employee.getId())
-                .userName(employee.getUsername())
-                .name(employee.getName())
-                .token(token)
-                .build();
+        EmployeeLoginVO employeeLoginVO = EmployeeLoginVO.builder().id(employee.getId()).userName(employee.getUsername()).name(employee.getName()).token(token).build();
 
         return Result.success(employeeLoginVO);
     }
@@ -78,19 +70,21 @@ public class EmployeeController {
 
     /**
      * 新增员工
+     *
      * @param employeeDTO
      * @return Result
      */
     @ApiOperation("新增员工")
     @PostMapping
     public Result save(@RequestBody EmployeeDTO employeeDTO) {
-        log.info("新增员工：{}",  employeeDTO);
+        log.info("新增员工：{}", employeeDTO);
         employeeService.save(employeeDTO);
         return Result.success();
     }
 
     /**
      * 员工分页查询
+     *
      * @return Result<PageResult>
      */
     @ApiOperation("员工分页查询")
@@ -99,5 +93,19 @@ public class EmployeeController {
         log.info("员工分页查询，参数为：{}", employeePageQueryDTO);
         PageResult pageResult = employeeService.pageQuery(employeePageQueryDTO);
         return Result.success(pageResult);
+    }
+
+    /**
+     * 启用禁用员工账号
+     * @param status
+     * @param id
+     * @return Result
+     */
+    @ApiOperation("启用禁用员工账号")
+    @PostMapping("/status/{status}")
+    public Result startOrStop(@PathVariable Integer status, Long id) {
+        log.info("启用禁用员工账号，{}，{}",status,id);
+        employeeService.startOrStop(status, id);
+        return Result.success();
     }
 }
