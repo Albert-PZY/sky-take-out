@@ -96,8 +96,9 @@ public class DishController {
 
     /**
      * 根据分类id查询菜品
+     *
      * @param categoryId
-     * @return Result<List<Dish>>
+     * @return Result<List < Dish>>
      */
     @ApiOperation("根据分类id查询菜品")
     @GetMapping("/list")
