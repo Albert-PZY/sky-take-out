@@ -68,4 +68,12 @@ public interface DishMapper {
      * @return List<Dish>
      */
     List<Dish> list(Dish dish);
+
+    /**
+     * 套餐起售停售
+     * @param id
+     * @return List<Dish>
+     */
+    @Select("select d.* from dish d left outer join setmeal_dish sd on d.id = sd.dish_id where sd.setmeal_id = #{id}")
+    List<Dish> getBySetmealId(Long id);
 }
