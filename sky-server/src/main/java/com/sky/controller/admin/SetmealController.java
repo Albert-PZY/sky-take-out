@@ -69,11 +69,24 @@ public class SetmealController {
      * @return Result<SetmealVO>
      */
     @ApiOperation("根据Id查询套餐和关联菜品数据")
-    @GetMapping
-    public Result<SetmealVO> getById(Long id) {
+    @GetMapping("/{id}")
+    public Result<SetmealVO> getById(@PathVariable Long id) {
         log.info("根据Id查询套餐和关联菜品数据:{}",id);
         SetmealVO setmealVO = setmealService.getByIdWithDish(id);
         return Result.success(setmealVO);
+    }
+
+    /**
+     * 修改套餐
+     * @param setmealDTO
+     * @return Result
+     */
+    @ApiOperation("修改套餐")
+    @PutMapping
+    public Result update(@RequestBody SetmealDTO setmealDTO) {
+        log.info("修改套餐:{}",setmealDTO);
+        setmealService.update(setmealDTO);
+        return Result.success();
     }
 
 }
