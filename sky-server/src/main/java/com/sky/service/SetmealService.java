@@ -5,10 +5,15 @@ import com.sky.dto.SetmealPageQueryDTO;
 import com.sky.result.PageResult;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public interface SetmealService {
 
     void saveWithDish(SetmealDTO setmealDTO);
 
     PageResult page(SetmealPageQueryDTO setmealPageQueryDTO);
+
+
+    void deleteBatch(List<Long> ids);
 }
