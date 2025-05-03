@@ -54,4 +54,10 @@ public interface OrderService {
      */
     @SneakyThrows
     void cancel(Long id);
+
+    /**
+     * 再来一单
+     * @param id
+     */
+    void repetition(Long id);
 }

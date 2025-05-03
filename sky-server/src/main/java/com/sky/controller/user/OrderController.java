@@ -13,6 +13,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import nonapi.io.github.classgraph.utils.LogNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -93,6 +94,19 @@ public class OrderController {
     public Result cancel(@PathVariable("id") Long id){
         log.info("取消订单{}",id);
         orderService.cancel(id);
+        return Result.success();
+    }
+
+    /**
+     * 再来一单
+     * @param id
+     * @return Result
+     */
+    @ApiOperation("再来一单")
+    @PostMapping("/repetition/{id}")
+    public Result repetition(@PathVariable("id") Long id){
+        log.info("再来一单{}",id);
+        orderService.repetition(id);
         return Result.success();
     }
 }
