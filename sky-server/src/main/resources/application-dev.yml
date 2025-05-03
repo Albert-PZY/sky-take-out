@@ -18,3 +18,10 @@ sky:
   wechat:
     appid: your-appid
     secret: your-secret
+    mchid:
+    mchSerialNo:
+    privateKeyFilePath:
+    apiV3Key:
+    weChatPayCertFilePath:
+    notifyUrl:
+    refundNotifyUrl:
