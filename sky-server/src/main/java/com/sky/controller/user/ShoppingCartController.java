@@ -23,6 +23,7 @@ public class ShoppingCartController {
 
     /**
      * 添加购物车
+     *
      * @param shoppingCartDTO
      * @return Result
      */
@@ -36,7 +37,8 @@ public class ShoppingCartController {
 
     /**
      * 查看购物车
-     * @return Result<List<ShoppingCart>>
+     *
+     * @return Result<List < ShoppingCart>>
      */
     @ApiOperation("查看购物车")
     @GetMapping("/list")
@@ -48,11 +50,12 @@ public class ShoppingCartController {
 
     /**
      * 清空购物车
+     *
      * @return Result
      */
     @ApiOperation("清空购物车")
     @DeleteMapping("/clean")
-    public Result clean(){
+    public Result clean() {
         log.info("清空购物车");
         shoppingCartService.cleanShoppingCart();
         return Result.success();
@@ -60,12 +63,13 @@ public class ShoppingCartController {
 
     /**
      * 删除购物车中一个商品
+     *
      * @param shoppingCartDTO
      * @return Result
      */
     @ApiOperation("删除购物车中一个商品")
     @PostMapping("/sub")
-    public Result sub(@RequestBody ShoppingCartDTO shoppingCartDTO){
+    public Result sub(@RequestBody ShoppingCartDTO shoppingCartDTO) {
         log.info("删除购物车中一个商品{}", shoppingCartDTO);
         shoppingCartService.subShoppingCart(shoppingCartDTO);
         return Result.success();
