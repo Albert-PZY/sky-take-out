@@ -5,6 +5,7 @@ import com.sky.dto.OrdersSubmitDTO;
 import com.sky.result.PageResult;
 import com.sky.vo.OrderPaymentVO;
 import com.sky.vo.OrderSubmitVO;
+import com.sky.vo.OrderVO;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -38,4 +39,11 @@ public interface OrderService {
      * @return PageResult
      */
     PageResult pageQuery4User(int page, int pageSize, Integer status);
+
+    /**
+     * 查询订单详情
+     * @param id
+     * @return OrderVO
+     */
+    OrderVO details(Long id);
 }
