@@ -6,6 +6,7 @@ import com.sky.result.PageResult;
 import com.sky.vo.OrderPaymentVO;
 import com.sky.vo.OrderSubmitVO;
 import com.sky.vo.OrderVO;
+import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -46,4 +47,11 @@ public interface OrderService {
      * @return OrderVO
      */
     OrderVO details(Long id);
+
+    /**
+     * 取消订单
+     * @param id
+     */
+    @SneakyThrows
+    void cancel(Long id);
 }

@@ -11,6 +11,7 @@ import com.sky.vo.OrderSubmitVO;
 import com.sky.vo.OrderVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -75,11 +76,23 @@ public class OrderController {
      */
     @ApiOperation("查询订单详情")
     @GetMapping("/orderDetail/{id}")
-    public Result<OrderVO> details( @PathVariable Long id){
-        log.info("查询订单详情{}",id);
+    public Result<OrderVO> details(@PathVariable("id") Long id){
+        log.info("查询订单详情{}", id);
         OrderVO orderVO = orderService.details(id);
         return Result.success(orderVO);
     }
 
-
+    /**
+     * 取消订单
+     * @param id
+     * @return Result
+     */
+    @ApiOperation("取消订单")
+    @PutMapping("cancel/{id}")
+    @SneakyThrows
+    public Result cancel(@PathVariable("id") Long id){
+        log.info("取消订单{}",id);
+        orderService.cancel(id);
+        return Result.success();
+    }
 }

@@ -10,6 +10,7 @@ import com.sky.dto.OrdersPaymentDTO;
 import com.sky.dto.OrdersSubmitDTO;
 import com.sky.entity.*;
 import com.sky.exception.AddressBookBusinessException;
+import com.sky.exception.OrderBusinessException;
 import com.sky.exception.ShoppingCartBusinessException;
 import com.sky.mapper.*;
 import com.sky.result.PageResult;
@@ -18,12 +19,14 @@ import com.sky.utils.WeChatPayUtil;
 import com.sky.vo.OrderPaymentVO;
 import com.sky.vo.OrderSubmitVO;
 import com.sky.vo.OrderVO;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -204,6 +207,41 @@ public class OrderServiceImpl implements OrderService {
         List<OrderDetail> list = orderDetailMapper.getByOrderId(id);
         orderVO.setOrderDetailList(list);
         return orderVO;
+    }
+
+    @Override
+    @SneakyThrows
+    public void cancel(Long id) {
+        Orders ordersDB = orderMapper.getById(id);
+        Orders orders = new Orders();
+        //判断订单是否存在
+        if (ordersDB == null) {
+            throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);
+        }
+        orders.setId(ordersDB.getId());
+        //订单状态 1待付款 2待接单 3已接单 4派送中 5已完成 6已取消
+        if (ordersDB.getStatus() > 2) {
+            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
+        }
+        if (ordersDB.getStatus().equals(Orders.TO_BE_CONFIRMED)) {
+            //调用微信支付退款接口
+            /*weChatPayUtil.refund(
+                    //商户订单号
+                    ordersDB.getNumber(),
+                    //商户退款单号
+                    ordersDB.getNumber(),
+                    //退款金额，单位 元
+                    new BigDecimal("0.01"),
+                    //原订单金额
+                    new BigDecimal("0.01"));*/
+
+            //支付状态设置为已退款
+            orders.setPayStatus(Orders.REFUND);
+        }
+        orders.setStatus(Orders.CANCELLED);
+        orders.setCancelReason("用户取消");
+        orders.setCancelTime(LocalDateTime.now());
+        orderMapper.update(orders);
     }
 
 }
