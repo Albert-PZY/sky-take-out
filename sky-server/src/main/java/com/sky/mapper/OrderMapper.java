@@ -58,4 +58,12 @@ public interface OrderMapper {
      */
     @Select("select * from orders where id = #{id}")
     Orders getById(Long id);
+
+    /**
+     * deliveryInProgress
+     * @param status
+     * @return Integer
+     */
+    @Select("select count(id) from orders where status = #{status}")
+    Integer countStatics(Integer status);
 }
