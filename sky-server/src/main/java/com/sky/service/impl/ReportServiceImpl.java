@@ -2,6 +2,7 @@ package com.sky.service.impl;
 
 import com.sky.entity.Orders;
 import com.sky.mapper.OrderMapper;
+import com.sky.mapper.UserMapper;
 import com.sky.service.ReportService;
 import com.sky.vo.TurnoverReportVO;
 import com.sky.vo.UserReportVO;
@@ -22,6 +23,8 @@ public class ReportServiceImpl implements ReportService {
 
     @Autowired
     private OrderMapper orderMapper;
+    @Autowired
+    private UserMapper userMapper;
 
     @Override
     public TurnoverReportVO getTurnoverStatistics(LocalDate begin, LocalDate end) {
@@ -66,9 +69,9 @@ public class ReportServiceImpl implements ReportService {
             LocalDateTime endTime = LocalDateTime.of(date, LocalTime.MAX);
             Map map = new HashMap();
             map.put("begin", beginTime);
-            Integer totalUser = orderMapper.countByMap(map);
+            Integer totalUser = userMapper.countByMap(map);
             map.put("end", endTime);
-            Integer newUser = orderMapper.countByMap(map);
+            Integer newUser = userMapper.countByMap(map);
             totalUser = totalUser == null ? 0 : totalUser;
             newUser = newUser == null ? 0 : newUser;
             totalUserList.add(totalUser.toString());
