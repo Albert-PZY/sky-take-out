@@ -5,10 +5,7 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.sky.constant.MessageConstant;
 import com.sky.context.BaseContext;
-import com.sky.dto.OrdersConfirmDTO;
-import com.sky.dto.OrdersPageQueryDTO;
-import com.sky.dto.OrdersPaymentDTO;
-import com.sky.dto.OrdersSubmitDTO;
+import com.sky.dto.*;
 import com.sky.entity.*;
 import com.sky.exception.AddressBookBusinessException;
 import com.sky.exception.OrderBusinessException;
@@ -289,6 +286,36 @@ public class OrderServiceImpl implements OrderService {
         orderMapper.update(orders);
     }
 
+    @Override
+    @SneakyThrows
+    public void rejection(OrdersRejectionDTO ordersRejectionDTO) {
+        Orders ordersDB = orderMapper.getById(ordersRejectionDTO.getId());
+        if(ordersDB == null || !ordersDB.getStatus().equals(Orders.TO_BE_CONFIRMED)) {
+            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
+        }
+
+        Orders orders = new Orders();
+
+        //调用微信支付退款接口
+            /*weChatPayUtil.refund(
+                    //商户订单号
+                    ordersDB.getNumber(),
+                    //商户退款单号
+                    ordersDB.getNumber(),
+                    //退款金额，单位 元
+                    new BigDecimal("0.01"),
+                    //原订单金额
+                    new BigDecimal("0.01"));*/
+
+        //更新订单信息
+        orders.setPayStatus(Orders.REFUND);
+        orders.setStatus(Orders.CANCELLED);
+        orders.setId(ordersDB.getId());
+        orders.setCancelTime(LocalDateTime.now());
+        orders.setRejectionReason(ordersRejectionDTO.getRejectionReason());
+        orderMapper.update(orders);
+    }
+
     private List<OrderVO> getOrderVOList(Page<Orders> page) {
         List<OrderVO> orderVOList = new ArrayList<>();
         List<Orders> ordersList = page.getResult();
@@ -311,5 +338,7 @@ public class OrderServiceImpl implements OrderService {
         //将集合中的所有元素连成一条语句，没有分隔符
         return String.join("", dishesList);
     }
+
+
 
 }
