@@ -94,4 +94,11 @@ public interface OrderMapper {
      * @return Double
      */
     Double sumByMap(Map map);
+
+    /**
+     * 根据时间统计用户
+     * @param map
+     * @return Integer
+     */
+    Integer countByMap(Map map);
 }
