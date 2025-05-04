@@ -99,4 +99,11 @@ public interface OrderMapper {
      * @return Double
      */
     Double sumByMap(Map map);
+
+    /**
+     * 根据时间和订单状态查询统计当天订单数量
+     * @param map
+     * @return Integer
+     */
+    Integer countByMap(Map map);
 }
