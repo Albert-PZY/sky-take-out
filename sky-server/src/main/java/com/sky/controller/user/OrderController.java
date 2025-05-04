@@ -13,12 +13,11 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import nonapi.io.github.classgraph.utils.LogNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @Api(tags = "C端订单相关接口")
-@RestController
+@RestController("userOrderController")
 @Slf4j
 @RequestMapping("/user/order")
 public class OrderController {
@@ -57,6 +56,7 @@ public class OrderController {
 
     /**
      * 历史订单查询
+     *
      * @param page
      * @param pageSize
      * @param status
@@ -64,20 +64,21 @@ public class OrderController {
      */
     @ApiOperation("历史订单查询")
     @GetMapping("/historyOrders")
-    public Result<PageResult> page(int page, int pageSize, Integer status){
+    public Result<PageResult> page(int page, int pageSize, Integer status) {
         log.info("历史订单查询:{},{},{}", page, pageSize, status);
-        PageResult pageResult = orderService.pageQuery4User(page,pageSize,status);
+        PageResult pageResult = orderService.pageQuery4User(page, pageSize, status);
         return Result.success(pageResult);
     }
 
     /**
      * 查询订单详情
+     *
      * @param id
      * @return Result<OrderVO>
      */
     @ApiOperation("查询订单详情")
     @GetMapping("/orderDetail/{id}")
-    public Result<OrderVO> details(@PathVariable("id") Long id){
+    public Result<OrderVO> details(@PathVariable("id") Long id) {
         log.info("查询订单详情{}", id);
         OrderVO orderVO = orderService.details(id);
         return Result.success(orderVO);
@@ -85,28 +86,31 @@ public class OrderController {
 
     /**
      * 取消订单
+     *
      * @param id
      * @return Result
      */
     @ApiOperation("取消订单")
     @PutMapping("cancel/{id}")
     @SneakyThrows
-    public Result cancel(@PathVariable("id") Long id){
-        log.info("取消订单{}",id);
+    public Result cancel(@PathVariable("id") Long id) {
+        log.info("取消订单{}", id);
         orderService.cancel(id);
         return Result.success();
     }
 
     /**
      * 再来一单
+     *
      * @param id
      * @return Result
      */
     @ApiOperation("再来一单")
     @PostMapping("/repetition/{id}")
-    public Result repetition(@PathVariable("id") Long id){
-        log.info("再来一单{}",id);
+    public Result repetition(@PathVariable("id") Long id) {
+        log.info("再来一单{}", id);
         orderService.repetition(id);
         return Result.success();
     }
+
 }
