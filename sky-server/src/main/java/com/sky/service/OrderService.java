@@ -49,7 +49,7 @@ public interface OrderService {
     OrderVO details(Long id);
 
     /**
-     * 取消订单
+     * C端取消订单
      * @param id
      */
     @SneakyThrows
@@ -85,4 +85,17 @@ public interface OrderService {
      */
     @SneakyThrows
     void rejection(OrdersRejectionDTO ordersRejectionDTO);
+
+    /**
+     * 管理端取消订单
+     * @param ordersCancelDTO
+     */
+    @SneakyThrows
+    void cancel4Admin(OrdersCancelDTO ordersCancelDTO);
+
+    /**
+     * 派送订单
+     * @param id
+     */
+    void delivery(Long id);
 }

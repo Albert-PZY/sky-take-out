@@ -218,7 +218,6 @@ public class OrderServiceImpl implements OrderService {
         if (ordersDB == null) {
             throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);
         }
-        orders.setId(ordersDB.getId());
         //订单状态 1待付款 2待接单 3已接单 4派送中 5已完成 6已取消
         if (ordersDB.getStatus() > 2) {
             throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
@@ -238,6 +237,7 @@ public class OrderServiceImpl implements OrderService {
             //支付状态设置为已退款
             orders.setPayStatus(Orders.REFUND);
         }
+        orders.setId(ordersDB.getId());
         orders.setStatus(Orders.CANCELLED);
         orders.setCancelReason("用户取消");
         orders.setCancelTime(LocalDateTime.now());
@@ -316,6 +316,53 @@ public class OrderServiceImpl implements OrderService {
         orderMapper.update(orders);
     }
 
+    @Override
+    public void cancel4Admin(OrdersCancelDTO ordersCancelDTO) {
+        Orders ordersDB = orderMapper.getById(ordersCancelDTO.getId());
+        Orders orders = new Orders();
+        //判断订单是否存在
+        if (ordersDB == null) {
+            throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);
+        }
+        //订单状态 1待付款 2待接单 3已接单 4派送中 5已完成 6已取消
+        if (ordersDB.getStatus() > 2) {
+            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
+        }
+        if (ordersDB.getPayStatus().equals(Orders.PAID)) {
+            //调用微信支付退款接口
+            /*weChatPayUtil.refund(
+                    //商户订单号
+                    ordersDB.getNumber(),
+                    //商户退款单号
+                    ordersDB.getNumber(),
+                    //退款金额，单位 元
+                    new BigDecimal("0.01"),
+                    //原订单金额
+                    new BigDecimal("0.01"));*/
+
+            //支付状态设置为已退款
+            orders.setPayStatus(Orders.REFUND);
+        }
+        orders.setId(ordersDB.getId());
+        orders.setStatus(Orders.CANCELLED);
+        orders.setCancelReason(ordersCancelDTO.getCancelReason());
+        orders.setCancelTime(LocalDateTime.now());
+        orderMapper.update(orders);
+    }
+
+    @Override
+    public void delivery(Long id) {
+        Orders ordersDB = orderMapper.getById(id);
+        if(ordersDB == null || !ordersDB.getStatus().equals(Orders.CONFIRMED)) {
+            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
+        }
+        Orders orders = Orders.builder()
+                .id(ordersDB.getId())
+                .status(Orders.DELIVERY_IN_PROGRESS)
+                .build();
+        orderMapper.update(orders);
+    }
+
     private List<OrderVO> getOrderVOList(Page<Orders> page) {
         List<OrderVO> orderVOList = new ArrayList<>();
         List<Orders> ordersList = page.getResult();
@@ -338,7 +385,5 @@ public class OrderServiceImpl implements OrderService {
         //将集合中的所有元素连成一条语句，没有分隔符
         return String.join("", dishesList);
     }
-
-
 
 }
