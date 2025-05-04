@@ -77,4 +77,13 @@ public interface OrderMapper {
      */
     @Select("select * from orders where status = #{status} and order_time < #{time}")
     List<Orders> getByStatusAndOrderTimeLT(Integer status, LocalDateTime time);
+
+    /**
+     * 根据订单号和用户Id查询
+     * @param outTradeNo
+     * @param currentId
+     * @return Orders
+     */
+    @Select("select * from orders where number = #{outTradeNo} and user_id = #{currentId}")
+    Orders getByNumberAndUserId(String outTradeNo, Long currentId);
 }

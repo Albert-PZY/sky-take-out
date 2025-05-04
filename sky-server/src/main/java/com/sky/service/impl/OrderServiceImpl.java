@@ -1,5 +1,6 @@
 package com.sky.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -18,17 +19,19 @@ import com.sky.vo.OrderPaymentVO;
 import com.sky.vo.OrderStatisticsVO;
 import com.sky.vo.OrderSubmitVO;
 import com.sky.vo.OrderVO;
+import com.sky.websocket.WebSocketServer;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,6 +50,8 @@ public class OrderServiceImpl implements OrderService {
     private ShoppingCartMapper shoppingCartMapper;
     @Autowired
     private WeChatPayUtil weChatPayUtil;
+    @Autowired
+    private WebSocketServer webSocketServer;
 
 
     @Override
@@ -142,6 +147,29 @@ public class OrderServiceImpl implements OrderService {
 
         log.info("调用updateStatus，用于替换微信支付更新数据库状态的问题");
         orderMapper.updateStatus(orderStatus, orderPaidStatus, checkOutTime, orderNumber);
+
+//        //通过websocket向客户端浏览器推送消息 type orderId content
+//        Map map = new HashMap();
+//        // 1 标表示来单提醒，2 表示客户催单
+//        map.put("type", 1);
+//        map.put("orderId",orders.getId());
+//        map.put("content", "订单号：" + outTradeNo);
+//
+//        String json = JSON.toJSONString(map);
+//        webSocketServer.sendToAllClient(json);
+
+        Map map = new HashMap();
+        // 消息类型，1表示来单提醒
+        map.put("type", 1);
+        //获取订单id
+        Orders orders = orderMapper.getByNumberAndUserId(orderNumber, BaseContext.getCurrentId());
+        map.put("orderId", orders.getId());
+        map.put("content", "订单号：" + orderNumber);
+
+        // 通过WebSocket实现来单提醒，向客户端浏览器推送消息
+        webSocketServer.sendToAllClient(JSON.toJSONString(map));
+        log.info("来单提醒：{}", JSON.toJSONString(map));
+
         return vo;
     }
 
@@ -151,10 +179,11 @@ public class OrderServiceImpl implements OrderService {
      *
      * @param outTradeNo
      */
+    @Override
     public void paySuccess(String outTradeNo) {
 
         // 根据订单号查询订单
-        Orders ordersDB = orderMapper.getByNumber(outTradeNo);
+        Orders ordersDB = orderMapper.getByNumberAndUserId(outTradeNo, BaseContext.getCurrentId());
 
         // 根据订单id更新订单的状态、支付方式、支付状态、结账时间
         Orders orders = Orders.builder()
@@ -290,7 +319,7 @@ public class OrderServiceImpl implements OrderService {
     @SneakyThrows
     public void rejection(OrdersRejectionDTO ordersRejectionDTO) {
         Orders ordersDB = orderMapper.getById(ordersRejectionDTO.getId());
-        if(ordersDB == null || !ordersDB.getStatus().equals(Orders.TO_BE_CONFIRMED)) {
+        if (ordersDB == null || !ordersDB.getStatus().equals(Orders.TO_BE_CONFIRMED)) {
             throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
         }
 
@@ -353,7 +382,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void delivery(Long id) {
         Orders ordersDB = orderMapper.getById(id);
-        if(ordersDB == null || !ordersDB.getStatus().equals(Orders.CONFIRMED)) {
+        if (ordersDB == null || !ordersDB.getStatus().equals(Orders.CONFIRMED)) {
             throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
         }
         Orders orders = Orders.builder()
@@ -366,7 +395,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void complete(Long id) {
         Orders ordersDB = orderMapper.getById(id);
-        if(ordersDB == null || !ordersDB.getStatus().equals(Orders.DELIVERY_IN_PROGRESS)) {
+        if (ordersDB == null || !ordersDB.getStatus().equals(Orders.DELIVERY_IN_PROGRESS)) {
             throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
         }
         Orders orders = Orders.builder()

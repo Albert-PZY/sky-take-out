@@ -20,7 +20,7 @@ public class OrderTask {
     /**
      * 处理超时订单的方法
      */
-    //每隔15分钟触发
+    //每分钟触发一次
     @Scheduled(cron = "0 * * * * ?")
     public void processTimeoutOrder() {
         log.info("定时处理超时订单");
@@ -39,7 +39,7 @@ public class OrderTask {
     /**
      * 处理一直处于派送中订单
      */
-    //每天凌晨一点触发
+    //每天凌晨一点触发一次
     @Scheduled(cron = "0 0 1 * * ?")
     public void processDeliveryOrder() {
         log.info("处理一直处于派送中订单");

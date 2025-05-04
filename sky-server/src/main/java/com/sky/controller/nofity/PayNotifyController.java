@@ -1,4 +1,4 @@
-package com.sky.controller.user;
+package com.sky.controller.nofity;
 
 import com.alibaba.druid.support.json.JSONUtils;
 import com.alibaba.fastjson.JSON;
@@ -11,6 +11,7 @@ import org.apache.http.entity.ContentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
@@ -45,8 +46,10 @@ public class PayNotifyController {
         log.info("解密后的文本：{}", plainText);
 
         JSONObject jsonObject = JSON.parseObject(plainText);
-        String outTradeNo = jsonObject.getString("out_trade_no");//商户平台订单号
-        String transactionId = jsonObject.getString("transaction_id");//微信支付交易号
+        //商户平台订单号
+        String outTradeNo = jsonObject.getString("out_trade_no");
+        //微信支付交易号
+        String transactionId = jsonObject.getString("transaction_id");
 
         log.info("商户平台订单号：{}", outTradeNo);
         log.info("微信支付交易号：{}", transactionId);
@@ -103,9 +106,10 @@ public class PayNotifyController {
 
     /**
      * 给微信响应
+     *
      * @param response
      */
-    private void responseToWeixin(HttpServletResponse response) throws Exception{
+    private void responseToWeixin(HttpServletResponse response) throws Exception {
         response.setStatus(200);
         HashMap<Object, Object> map = new HashMap<>();
         map.put("code", "SUCCESS");
