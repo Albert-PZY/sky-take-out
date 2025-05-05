@@ -5,6 +5,7 @@ import com.sky.constant.MessageConstant;
 import com.sky.dto.UserLoginDTO;
 import com.sky.entity.User;
 import com.sky.exception.LoginFailedException;
+import com.sky.mapper.ShoppingCartMapper;
 import com.sky.mapper.UserMapper;
 import com.sky.properties.WeChatProperties;
 import com.sky.service.UserService;
@@ -22,12 +23,15 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private WeChatProperties weChatProperties;
+    @Autowired
+    private ShoppingCartMapper shoppingCartMapper;
 
     @Autowired
     private UserMapper userMapper;
 
     /**
      * 微信登录
+     *
      * @param userLoginDTO
      * @return
      */
@@ -48,12 +52,15 @@ public class UserServiceImpl implements UserService {
                     .build();
             userMapper.insert(user);
         }
+        //清空重置购物车
+        shoppingCartMapper.deleteByUserId(user.getId());
         //返回User对象
         return user;
     }
 
     /**
      * 调用微信接口服务，获取微信用户的openid
+     *
      * @param code
      * @return String
      */

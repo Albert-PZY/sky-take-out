@@ -62,3 +62,7 @@ sky:
     weChatPayCertFilePath: ${sky.wechat.weChatPayCertFilePath}
     notifyUrl: ${sky.wechat.notifyUrl}
     refundNotifyUrl: ${sky.wechat.refundNotifyUrl}
+  shop:
+    address: 广东省韶关市浈江区新韶镇大学路288号
+  baidu:
+    ak: GoAIAjrSfWnQsp8jYssbuF9yq76nEVgz
