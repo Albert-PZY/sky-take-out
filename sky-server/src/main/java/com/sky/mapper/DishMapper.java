@@ -10,6 +10,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface DishMapper {
@@ -57,6 +58,7 @@ public interface DishMapper {
 
     /**
      * 修改菜品
+     *
      * @param dish
      */
     @AutoFill(OperationType.UPDATE)
@@ -64,6 +66,7 @@ public interface DishMapper {
 
     /**
      * 根据分类id查询菜品
+     *
      * @param dish
      * @return List<Dish>
      */
@@ -71,9 +74,19 @@ public interface DishMapper {
 
     /**
      * 套餐起售停售
+     *
      * @param id
      * @return List<Dish>
      */
     @Select("select d.* from dish d left outer join setmeal_dish sd on d.id = sd.dish_id where sd.setmeal_id = #{id}")
     List<Dish> getBySetmealId(Long id);
+
+
+    /**
+     * 根据条件统计菜品数量
+     *
+     * @param map
+     * @return
+     */
+    Integer countByMap(Map map);
 }
