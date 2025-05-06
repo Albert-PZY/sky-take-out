@@ -99,7 +99,7 @@ public interface OrderMapper {
      * @param map
      * @return Double
      */
-    Double sumByMap(Map map);
+    List<Orders> getByMap(Map map);
 
     /**
      * 根据时间和订单状态查询统计当天订单数量
