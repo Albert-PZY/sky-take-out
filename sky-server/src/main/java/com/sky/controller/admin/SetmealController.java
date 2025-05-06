@@ -1,5 +1,6 @@
 package com.sky.controller.admin;
 
+import com.sky.annotation.Lock;
 import com.sky.dto.SetmealDTO;
 import com.sky.dto.SetmealPageQueryDTO;
 import com.sky.result.PageResult;
@@ -32,6 +33,7 @@ public class SetmealController {
      */
     @ApiOperation("新增套餐")
     @PostMapping
+    @Lock()
     @CacheEvict(cacheNames = "setmealCache", key = "#setmealDTO.categoryId")
     public Result save(@RequestBody SetmealDTO setmealDTO) {
         log.info("新增套餐：{}", setmealDTO);
@@ -61,6 +63,7 @@ public class SetmealController {
      */
     @ApiOperation("批量删除套餐")
     @DeleteMapping
+    @Lock()
     @CacheEvict(cacheNames = "setmealCache", allEntries = true)
     public Result delete(@RequestParam List<Long> ids) {
         log.info("批量删除套餐:{}", ids);
@@ -90,6 +93,7 @@ public class SetmealController {
      */
     @ApiOperation("修改套餐")
     @PutMapping
+    @Lock()
     @CacheEvict(cacheNames = "setmealCache", allEntries = true)
     public Result update(@RequestBody SetmealDTO setmealDTO) {
         log.info("修改套餐:{}", setmealDTO);
@@ -106,6 +110,7 @@ public class SetmealController {
      */
     @ApiOperation("套餐起售停售")
     @PostMapping("/status/{status}")
+    @Lock()
     @CacheEvict(cacheNames = "setmealCache", allEntries = true)
     public Result stratOrStop(@PathVariable Integer status, Long id) {
         log.info("套餐起售停售:{},{}", status, id);
