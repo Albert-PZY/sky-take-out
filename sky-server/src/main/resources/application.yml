@@ -16,6 +16,10 @@ spring:
     host: ${sky.redis.host}
     port: ${sky.redis.port}
     database: ${sky.redis.database}
+  bloom-filter:
+    expected-insertions: 100
+    false-probability: 0.01
+
 
 mybatis:
   #mapper配置文件

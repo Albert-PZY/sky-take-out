@@ -1,5 +1,6 @@
 package com.sky.controller.admin;
 
+import com.sky.annotation.UpdateBloomFilter;
 import com.sky.dto.CategoryDTO;
 import com.sky.dto.CategoryPageQueryDTO;
 import com.sky.entity.Category;
@@ -32,6 +33,7 @@ public class CategoryController {
      */
     @PostMapping
     @ApiOperation("新增分类")
+    @UpdateBloomFilter
     public Result<String> save(@RequestBody CategoryDTO categoryDTO){
         log.info("新增分类：{}", categoryDTO);
         categoryService.save(categoryDTO);
@@ -58,6 +60,7 @@ public class CategoryController {
      */
     @DeleteMapping
     @ApiOperation("删除分类")
+    @UpdateBloomFilter
     public Result<String> deleteById(Long id){
         log.info("删除分类：{}", id);
         categoryService.deleteById(id);
@@ -84,6 +87,7 @@ public class CategoryController {
      */
     @PostMapping("/status/{status}")
     @ApiOperation("启用禁用分类")
+    @UpdateBloomFilter
     public Result<String> startOrStop(@PathVariable("status") Integer status, Long id){
         categoryService.startOrStop(status,id);
         return Result.success();

@@ -1,5 +1,6 @@
 package com.sky.config;
 
+import com.sky.interceptor.BloomFilterInterceptor;
 import com.sky.interceptor.JwtTokenAdminInterceptor;
 import com.sky.interceptor.JwtTokenUserInterceptor;
 import com.sky.json.JacksonObjectMapper;
@@ -34,6 +35,9 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
     @Autowired
     private JwtTokenUserInterceptor jwtTokenUserInterceptor;
 
+    @Autowired
+    private BloomFilterInterceptor bloomFilterInterceptor;
+
     /**
      * 注册自定义拦截器
      *
@@ -50,6 +54,10 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
                 .addPathPatterns("/user/**")
                 .excludePathPatterns("/user/user/login")
                 .excludePathPatterns("/user/shop/status");
+
+        registry.addInterceptor(bloomFilterInterceptor)
+                .addPathPatterns("/user/setmeal/list")
+                .addPathPatterns("/user/dish/list");
     }
 
     @Override
