@@ -1,6 +1,7 @@
 package com.sky.controller.admin;
 
 
+import com.sky.annotation.Lock;
 import com.sky.dto.DishDTO;
 import com.sky.dto.DishPageQueryDTO;
 import com.sky.entity.Dish;
@@ -37,6 +38,7 @@ public class DishController {
      */
     @ApiOperation("新增菜品")
     @PostMapping
+    @Lock
     public Result insert(@RequestBody DishDTO dishDTO) {
         log.info("新增菜品{}", dishDTO);
         dishService.insertWithFlavors(dishDTO);
@@ -66,6 +68,7 @@ public class DishController {
      */
     @ApiOperation("批量删除菜品")
     @DeleteMapping
+    @Lock
     public Result delete(@RequestParam List<Long> ids) {
         log.info("批量删除菜品{}", ids);
         dishService.deleteByBatch(ids);
@@ -95,6 +98,7 @@ public class DishController {
      */
     @ApiOperation("修改菜品")
     @PutMapping
+    @Lock
     public Result update(@RequestBody DishDTO dishDTO) {
         log.info("修改菜品:{}", dishDTO);
         dishService.updateWithFlavor(dishDTO);
@@ -124,6 +128,7 @@ public class DishController {
      */
     @ApiOperation("菜品起售停售")
     @PostMapping("/status/{status}")
+    @Lock
     public Result startOrStop(@PathVariable Integer status, Long id) {
         log.info("套餐起售停售:{}", status);
         dishService.startOrStop(status, id);
